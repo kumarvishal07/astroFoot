@@ -1,16 +1,29 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import React from 'react';
-import { useColorScheme } from 'react-native';
+import { Stack } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 
-import { AnimatedSplashOverlay } from '@/components/animated-icon';
-import AppTabs from '@/components/app-tabs';
-
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+export default function Layout() {
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <AnimatedSplashOverlay />
-      <AppTabs />
-    </ThemeProvider>
+    <>
+      <StatusBar style="light" />
+      <Stack
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: '#1C0B2B', // Deep mystical background
+          },
+          headerTintColor: '#E0C097', // Gold text
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            fontFamily: 'serif',
+          },
+          contentStyle: {
+            backgroundColor: '#1C0B2B',
+          },
+        }}
+      >
+        <Stack.Screen name="index" options={{ title: 'AstroFoot' }} />
+        <Stack.Screen name="scan" options={{ title: 'Scan Foot', presentation: 'modal' }} />
+        <Stack.Screen name="result" options={{ title: 'Your Reading', presentation: 'modal' }} />
+      </Stack>
+    </>
   );
 }
