@@ -39,6 +39,7 @@ export default function ResultScreen() {
       futureTitle: "Future & Career",
       healthTitle: "Health & Vitality",
       relationshipTitle: "Love & Relationships",
+      suggestionTitle: "Life Suggestions & Advice",
       howItWorksTitle: "How We Predict",
       howItWorksDesc: "Podomancy (foot palmistry) is an ancient astrological science. By analyzing the structural shape of your foot, the depth of the lines on your sole, and overall proportions, we tap into your cosmic energy. These features act as a mirror to your inner personality, health vitality, and future destiny.",
       doneButton: "Done",
@@ -54,6 +55,7 @@ export default function ResultScreen() {
       futureTitle: "भविष्य और करियर",
       healthTitle: "स्वास्थ्य और जीवन शक्ति",
       relationshipTitle: "प्यार और रिश्ते",
+      suggestionTitle: "जीवन के लिए सुझाव और सलाह",
       howItWorksTitle: "हम भविष्यवाणी कैसे करते हैं",
       howItWorksDesc: "पोडोमेंसी (पैर की हस्तरेखा) एक प्राचीन ज्योतिषीय विज्ञान है। आपके पैर के संरचनात्मक आकार, तलवे की रेखाओं की गहराई और समग्र अनुपात का विश्लेषण करके, हम आपकी ब्रह्मांडीय ऊर्जा का आकलन करते हैं। ये विशेषताएं आपके आंतरिक व्यक्तित्व, स्वास्थ्य और भविष्य के भाग्य के दर्पण के रूप में कार्य करती हैं।",
       doneButton: "पूर्ण (Done)",
@@ -72,7 +74,7 @@ export default function ResultScreen() {
         
         <Sparkles color="#E0C097" size={40} style={{marginTop: 15}} />
         <Text style={styles.title}>{t.title}</Text>
-        {params.name && <Text style={styles.greeting}>For {params.name}</Text>}
+        {params.name ? <Text style={styles.greeting}>For {params.name}</Text> : null}
       </View>
 
       <View style={styles.detectionCard}>
@@ -117,6 +119,14 @@ export default function ResultScreen() {
         <Text style={styles.cardText}>{reading.predictions.relationship[language]}</Text>
       </View>
 
+      <View style={styles.suggestionCard}>
+        <View style={styles.cardHeader}>
+          <Sparkles color="#E0C097" size={24} />
+          <Text style={styles.suggestionCardTitle}>{t.suggestionTitle}</Text>
+        </View>
+        <Text style={styles.suggestionCardText}>{reading.predictions.suggestion[language]}</Text>
+      </View>
+
       <View style={styles.infoCard}>
         <View style={styles.cardHeader}>
           <Info color="#1C0B2B" size={20} />
@@ -127,7 +137,7 @@ export default function ResultScreen() {
 
       <TouchableOpacity 
         style={styles.doneButton} 
-        onPress={() => router.dismissAll()}
+        onPress={() => router.replace('/')}
       >
         <Text style={styles.doneButtonText}>{t.doneButton}</Text>
       </TouchableOpacity>
@@ -235,6 +245,33 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#EAEAEA',
     lineHeight: 24,
+  },
+  suggestionCard: {
+    backgroundColor: '#150720',
+    borderRadius: 15,
+    padding: 20,
+    marginBottom: 25,
+    borderWidth: 1.5,
+    borderColor: '#E0C097',
+    shadowColor: '#E0C097',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
+    elevation: 8,
+  },
+  suggestionCardTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#E0C097',
+    marginLeft: 10,
+    fontFamily: 'serif',
+    letterSpacing: 1,
+  },
+  suggestionCardText: {
+    fontSize: 16,
+    color: '#D4C4E2',
+    lineHeight: 24,
+    fontStyle: 'italic',
   },
   infoCard: {
     backgroundColor: 'rgba(224, 192, 151, 0.8)',

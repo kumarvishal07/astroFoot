@@ -23,7 +23,7 @@ export default function HomeScreen() {
   };
 
   const handleEmail = () => {
-    const subject = `AstroFoot Consultation Inquiry`;
+    const subject = `AstroSole Consultation Inquiry`;
     const body = `Hello,\n\nI would like to request a detailed podomancy reading.`;
     const url = `mailto:mybusiness7795@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     Linking.openURL(url).catch(() => {

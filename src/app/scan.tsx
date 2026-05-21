@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Animated, Dimensions, ScrollView, TextInput, KeyboardAvoidingView, Platform, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Animated, Dimensions, ScrollView, TextInput, KeyboardAvoidingView, Platform, Alert, Linking } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { Camera, ScanLine, Footprints, Upload, User, MapPin, Phone, Mail } from 'lucide-react-native';
@@ -14,6 +14,7 @@ export default function ScanScreen() {
   const [address, setAddress] = useState('');
   const [mobile, setMobile] = useState('');
   const [email, setEmail] = useState('');
+  const [errors, setErrors] = useState<{name?: string, mobile?: string, email?: string}>({});
   const [isFormCompleted, setIsFormCompleted] = useState(false);
 
   // Scanner State
@@ -21,11 +22,48 @@ export default function ScanScreen() {
   const [isScanning, setIsScanning] = useState(false);
   const scanAnim = useRef(new Animated.Value(0)).current;
 
-  const handleFormSubmit = () => {
-    if (!name.trim() || !mobile.trim()) {
-      Alert.alert("Missing Details", "Please enter at least your Name and Mobile number to continue.");
+  const handleFormSubmit = async () => {
+    const trimmedName = name.trim();
+    const trimmedMobile = mobile.trim();
+    const trimmedEmail = email.trim();
+    const trimmedAddress = address.trim();
+
+    let newErrors: {name?: string, mobile?: string, email?: string} = {};
+
+    if (!trimmedName) newErrors.name = "Name is required";
+    if (!trimmedMobile) newErrors.mobile = "Mobile number is required";
+
+    if (trimmedMobile) {
+      const mobileRegex = /^\+?[0-9]{10,15}$/;
+      if (!mobileRegex.test(trimmedMobile.replace(/[-\s]/g, ''))) {
+        newErrors.mobile = "Enter a valid mobile number (10-15 digits)";
+      }
+    }
+
+    if (trimmedEmail) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(trimmedEmail)) {
+        newErrors.email = "Enter a valid email address";
+      }
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
+
+    setErrors({});
+
+    const message = `New Lead from AstroSole:\nName: ${trimmedName}\nMobile: ${trimmedMobile}\nEmail: ${trimmedEmail || 'N/A'}\nAddress: ${trimmedAddress || 'N/A'}`;
+    const whatsappUrl = `https://wa.me/917003891953?text=${encodeURIComponent(message)}`;
+
+    try {
+      await Linking.openURL(whatsappUrl);
+    } catch (error) {
+      console.log("Error opening WhatsApp:", error);
+      Alert.alert("Notice", "Details saved, but could not automatically open WhatsApp.");
+    }
+
     setIsFormCompleted(true);
   };
 
@@ -111,52 +149,63 @@ export default function ScanScreen() {
           <Text style={styles.title}>Your Details</Text>
           <Text style={styles.subtitle}>Enter your details to receive personalized insights</Text>
 
-          <View style={styles.inputGroup}>
-            <User color="#A080C0" size={20} style={styles.inputIcon} />
-            <TextInput 
-              style={styles.input}
-              placeholder="Full Name"
-              placeholderTextColor="#7A4B94"
-              value={name}
-              onChangeText={setName}
-            />
+          <View style={styles.fieldContainer}>
+            <View style={[styles.inputGroup, errors.name ? styles.inputError : null]}>
+              <User color="#A080C0" size={20} style={styles.inputIcon} />
+              <TextInput 
+                style={styles.input}
+                placeholder="Full Name"
+                placeholderTextColor="#7A4B94"
+                value={name}
+                onChangeText={(val) => { setName(val); setErrors(prev => ({...prev, name: undefined})); }}
+              />
+            </View>
+            {errors.name ? <Text style={styles.errorText}>{errors.name}</Text> : null}
           </View>
 
-          <View style={styles.inputGroup}>
-            <Phone color="#A080C0" size={20} style={styles.inputIcon} />
-            <TextInput 
-              style={styles.input}
-              placeholder="Mobile Number"
-              placeholderTextColor="#7A4B94"
-              keyboardType="phone-pad"
-              value={mobile}
-              onChangeText={setMobile}
-            />
+          <View style={styles.fieldContainer}>
+            <View style={[styles.inputGroup, errors.mobile ? styles.inputError : null]}>
+              <Phone color="#A080C0" size={20} style={styles.inputIcon} />
+              <TextInput 
+                style={styles.input}
+                placeholder="Mobile Number"
+                placeholderTextColor="#7A4B94"
+                keyboardType="phone-pad"
+                value={mobile}
+                onChangeText={(val) => { setMobile(val); setErrors(prev => ({...prev, mobile: undefined})); }}
+              />
+            </View>
+            {errors.mobile ? <Text style={styles.errorText}>{errors.mobile}</Text> : null}
           </View>
 
-          <View style={styles.inputGroup}>
-            <Mail color="#A080C0" size={20} style={styles.inputIcon} />
-            <TextInput 
-              style={styles.input}
-              placeholder="Email Address"
-              placeholderTextColor="#7A4B94"
-              keyboardType="email-address"
-              value={email}
-              onChangeText={setEmail}
-            />
+          <View style={styles.fieldContainer}>
+            <View style={[styles.inputGroup, errors.email ? styles.inputError : null]}>
+              <Mail color="#A080C0" size={20} style={styles.inputIcon} />
+              <TextInput 
+                style={styles.input}
+                placeholder="Email Address"
+                placeholderTextColor="#7A4B94"
+                keyboardType="email-address"
+                value={email}
+                onChangeText={(val) => { setEmail(val); setErrors(prev => ({...prev, email: undefined})); }}
+              />
+            </View>
+            {errors.email ? <Text style={styles.errorText}>{errors.email}</Text> : null}
           </View>
 
-          <View style={[styles.inputGroup, styles.textAreaGroup]}>
-            <MapPin color="#A080C0" size={20} style={[styles.inputIcon, {marginTop: 12}]} />
-            <TextInput 
-              style={[styles.input, styles.textArea]}
-              placeholder="Address / Location"
-              placeholderTextColor="#7A4B94"
-              multiline
-              numberOfLines={3}
-              value={address}
-              onChangeText={setAddress}
-            />
+          <View style={styles.fieldContainer}>
+            <View style={[styles.inputGroup, styles.textAreaGroup]}>
+              <MapPin color="#A080C0" size={20} style={[styles.inputIcon, {marginTop: 12}]} />
+              <TextInput 
+                style={[styles.input, styles.textArea]}
+                placeholder="Address / Location"
+                placeholderTextColor="#7A4B94"
+                multiline
+                numberOfLines={3}
+                value={address}
+                onChangeText={setAddress}
+              />
+            </View>
           </View>
 
           <TouchableOpacity style={styles.submitButton} onPress={handleFormSubmit}>
@@ -180,7 +229,7 @@ export default function ScanScreen() {
         {imageUri ? (
           <>
             <Image source={{ uri: imageUri }} style={styles.image} />
-            {isScanning && (
+            {isScanning ? (
               <Animated.View 
                 style={[
                   styles.scannerLine, 
@@ -196,12 +245,12 @@ export default function ScanScreen() {
               >
                 <ScanLine color="#E0C097" size={32} />
               </Animated.View>
-            )}
-            {isScanning && (
+            ) : null}
+            {isScanning ? (
               <View style={styles.scanningOverlay}>
                 <Text style={styles.scanningText}>Analyzing Podomancy Features...</Text>
               </View>
-            )}
+            ) : null}
           </>
         ) : (
           <View style={styles.placeholder}>
@@ -211,7 +260,7 @@ export default function ScanScreen() {
         )}
       </View>
 
-      {!isScanning && !imageUri && (
+      {!isScanning && !imageUri ? (
         <View style={styles.initialButtonRow}>
           <TouchableOpacity style={styles.actionButton} onPress={takePhoto}>
             <Camera color="#1C0B2B" size={20} style={{marginRight: 8}} />
@@ -222,9 +271,9 @@ export default function ScanScreen() {
             <Text style={styles.actionText}>Upload Image</Text>
           </TouchableOpacity>
         </View>
-      )}
+      ) : null}
 
-      {imageUri && !isScanning && (
+      {imageUri && !isScanning ? (
         <View style={styles.buttonRow}>
           <TouchableOpacity style={styles.secondaryButton} onPress={takePhoto}>
             <Text style={styles.secondaryButtonText}>Retake Photo</Text>
@@ -233,7 +282,7 @@ export default function ScanScreen() {
             <Text style={styles.scanButtonText}>Analyze Foot</Text>
           </TouchableOpacity>
         </View>
-      )}
+      ) : null}
     </ScrollView>
   );
 }
@@ -247,6 +296,9 @@ const styles = StyleSheet.create({
     padding: 24,
     paddingTop: 60,
   },
+  fieldContainer: {
+    marginBottom: 20,
+  },
   inputGroup: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -254,8 +306,17 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#7A4B94',
-    marginBottom: 20,
     paddingHorizontal: 15,
+  },
+  inputError: {
+    borderColor: '#FF6B6B',
+    borderWidth: 1.5,
+  },
+  errorText: {
+    color: '#FF6B6B',
+    fontSize: 12,
+    marginTop: 5,
+    marginLeft: 10,
   },
   textAreaGroup: {
     alignItems: 'flex-start',

@@ -20,7 +20,7 @@ export default function Layout() {
           },
         }}
       >
-        <Stack.Screen name="index" options={{ title: 'AstroFoot' }} />
+        <Stack.Screen name="index" options={{ title: 'AstroSole' }} />
         <Stack.Screen name="scan" options={{ title: 'Scan Foot', presentation: 'modal' }} />
         <Stack.Screen name="result" options={{ title: 'Your Reading', presentation: 'modal' }} />
       </Stack>
