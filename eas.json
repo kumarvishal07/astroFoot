@@ -12,7 +12,12 @@
       "distribution": "internal"
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "android": {
+        "artifactPaths": [
+          "android/app/build/outputs/mapping/**/*.txt"
+        ]
+      }
     }
   },
   "submit": {

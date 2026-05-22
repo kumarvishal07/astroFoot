@@ -129,7 +129,7 @@ export default function ScanScreen() {
 
     // Simulate network/processing delay before navigating
     setTimeout(() => {
-      Animated.timing(scanAnim).stop();
+      scanAnim.stopAnimation();
       setIsScanning(false);
       // Pass the collected details to the result screen
       router.replace({

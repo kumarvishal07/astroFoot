@@ -59,51 +59,51 @@ export default function HoroscopeCarousel() {
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 20,
+    marginVertical: 8,
   },
   title: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#E0C097', // Mystical gold
-    marginLeft: 20,
-    marginBottom: 10,
+    marginLeft: 6,
+    marginBottom: 6,
     fontFamily: 'serif',
   },
   listContainer: {
-    paddingHorizontal: 10,
+    paddingHorizontal: 0,
   },
   card: {
     width: CARD_WIDTH,
     backgroundColor: 'rgba(50, 20, 80, 0.6)', // Deep purple with opacity
     borderRadius: 15,
-    padding: 20,
-    marginHorizontal: 10,
+    padding: 12,
+    marginHorizontal: 8,
     borderWidth: 1,
     borderColor: '#7A4B94',
   },
   cardHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 5,
+    marginBottom: 3,
   },
   symbol: {
-    fontSize: 24,
+    fontSize: 20,
     color: '#E0C097',
-    marginRight: 10,
+    marginRight: 8,
   },
   sign: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#FFFFFF',
   },
   date: {
-    fontSize: 14,
+    fontSize: 11,
     color: '#A080C0',
-    marginBottom: 10,
+    marginBottom: 5,
   },
   horoscope: {
-    fontSize: 16,
+    fontSize: 13,
     color: '#EAEAEA',
-    lineHeight: 22,
+    lineHeight: 18,
   },
 });

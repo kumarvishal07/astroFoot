@@ -48,6 +48,15 @@
           "photosPermission": "Allow AstroSole to access your photos to scan your foot.",
           "cameraPermission": "Allow AstroSole to access your camera to take a photo of your foot."
         }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "enableMinifyInReleaseBuilds": true,
+            "enableShrinkResourcesInReleaseBuilds": true
+          }
+        }
       ]
     ],
     "experiments": {
